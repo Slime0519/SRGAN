@@ -67,8 +67,8 @@ class Dataset_Vaild(Dataset):
 
 
 if __name__ == "__main__":
-    dirpath_train = "Data/Train"
-    dirpath_vaild = "Data/Vaild"
+    dirpath_train = "Dataset/Train"
+    dirpath_vaild = "Dataset/Vaild"
     Test_Traindataset = Dataset_Train(dirpath= dirpath_train, crop_size= 96, upscale_factor= 4)
     Test_Vailddataset = Dataset_Vaild(dirpath= dirpath_vaild, upscale_factor=4)
 
