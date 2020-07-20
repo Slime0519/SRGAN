@@ -25,7 +25,6 @@ class Dataset_Train(Dataset):
     def __init__(self, dirpath, crop_size = 96, upscale_factor = 4):
         super(Dataset_Train, self).__init__()
         self.imagelist = glob.glob(os.path.join(dirpath,"*.jpg"))
-
         self.cropsize = crop_size - (crop_size%upscale_factor)
 
         self.hr_transform = hr_transform(self.cropsize)
@@ -33,6 +32,8 @@ class Dataset_Train(Dataset):
 
     def __getitem__(self, index):
         image = Image.open(self.imagelist[index])
+        image = np.array(image)
+
         hr_image = self.hr_transform(image)
         lr_image = self.lr_transform(hr_image)
 
@@ -49,14 +50,16 @@ class Dataset_Vaild(Dataset):
 
     def __getitem__(self, index):
         image = Image.open(self.imagelist[index])
-        height, width = image.size
+        image = np.array(image)
+        height, width = image.shape[0], image.shape[1]
         self.crop_size = min(height,width) - (min(height,width) % self.upscale_factor)
         self.hr_transform = hr_transform(self.crop_size)
         self.lr_transform = lr_transform(self.crop_size, self.upscale_factor)
 
-        hr_image = self.hr_transform(self.image)
+        hr_image = self.hr_transform(image)
         lr_image = self.lr_transform(hr_image)
-
+        print("size of hr_image : {}".format(hr_image.shape))
+        print("size of hr_image : {}".format(lr_image.shape))
         return lr_image, hr_image
 
     def __len__(self):
@@ -72,9 +75,26 @@ if __name__ == "__main__":
     Test_TraindataLoader = DataLoader(dataset=Test_Traindataset, batch_size=16, shuffle=True)
     Test_VailddataLoader = DataLoader(dataset=Test_Vailddataset, batch_size=1)
 
-    for i,(input, target) in enumerate(Test_TraindataLoader):
-        plt.imshow(input[0])
+    for input, target in Test_TraindataLoader:
+        print(input[0].shape)
+        inputimage = np.array(input[0])
+        inputimage = np.transpose(inputimage,(1,2,0))
+        plt.imshow(inputimage)
         plt.show()
-        plt.imshow(target[0])
+        outputimage = np.array(target[0])
+        outputimage = np.transpose(outputimage,(1,2,0))
+        plt.imshow(outputimage)
         plt.show()
+        break
 
+    for input, target in Test_VailddataLoader:
+        print(input[0].shape)
+        inputimage = np.array(input[0])
+        inputimage = np.transpose(inputimage, (1, 2, 0))
+        plt.imshow(inputimage)
+        plt.show()
+        outputimage = np.array(target[0])
+        outputimage = np.transpose(outputimage, (1, 2, 0))
+        plt.imshow(outputimage)
+        plt.show()
+        break
