@@ -78,6 +78,7 @@ if __name__ == "__main__":
     for input, target in Test_TraindataLoader:
         print(input[0].shape)
         inputimage = np.array(input[0])
+        print(inputimage)
         inputimage = np.transpose(inputimage,(1,2,0))
         plt.imshow(inputimage)
         plt.show()
@@ -90,6 +91,7 @@ if __name__ == "__main__":
     for input, target in Test_VailddataLoader:
         print(input[0].shape)
         inputimage = np.array(input[0])
+        print(inputimage)
         inputimage = np.transpose(inputimage, (1, 2, 0))
         plt.imshow(inputimage)
         plt.show()
