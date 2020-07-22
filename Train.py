@@ -7,8 +7,16 @@ import torch.nn as nn
 import Dataset_gen
 import Model
 import Perceptual_Loss
+import argparse
+import glob
+import os
 
 from tqdm import tqdm
+
+parser = argparse.ArgumentParser(description="SRGAN Training Module")
+parser.add_argument('--pre_trained', type = str, default=None, help = "path of pretrained models")
+parser.add_argument('--num_epochs', type = int, default=100, help="train epoch")
+
 
 BATCH_SIZE = 16
 CROP_SIZE = 96
@@ -25,6 +33,12 @@ else:
     device = torch.device("cpu:0")
 
 if __name__ == "__main__":
+
+    opt = parser.parse_args()
+
+    PRETRAINED_PATH = opt.pre_trained
+    TOTAL_EPOCH = opt.num_epochs
+
     train_dataset = Dataset_gen.Dataset_Train(dirpath=DIRPATH_TRAIN, crop_size=96, upscale_factor=UPSCALIE_FACTOR)
     vaild_dataset = Dataset_gen.Dataset_Vaild(dirpath=DIRPATH_VAILD, upscale_factor=UPSCALIE_FACTOR)
 
@@ -52,7 +66,13 @@ if __name__ == "__main__":
     Train_Dis_loss = np.zeros(TOTAL_EPOCH)
     train_len = len(train_dataloader)
 
-    for epoch in range(TOTAL_EPOCH):
+    start_epoch = 0
+    if PRETRAINED_PATH is not None:
+
+
+
+
+    for epoch in range(start_epoch,TOTAL_EPOCH):
         # prepare training
         Gen_Model.train()
         Dis_Model.train()
