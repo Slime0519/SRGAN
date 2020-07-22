@@ -17,6 +17,7 @@ DIRPATH_TRAIN = "Dataset/Train"
 DIRPATH_VAILD = "Dataset/Vaild"
 TOTAL_EPOCH = 100
 grad_clip = None
+lr = 1e-4
 
 if torch.cuda.is_available():
     device = torch.device("cuda:0")
@@ -33,8 +34,8 @@ if __name__ == "__main__":
     Gen_Model = Model.Generator()
     Dis_Model = Model.Discriminator()
 
-    Gen_optimizer = optim.Adam(Gen_Model.parameters())
-    Dis_optimizer = optim.Adam(Dis_Model.parameters())
+    Gen_optimizer = optim.Adam(Gen_Model.parameters(),lr= lr) #lr = 1e-4
+    Dis_optimizer = optim.Adam(Dis_Model.parameters(),lr = lr)
 
     Vggloss = Perceptual_Loss.vggloss()  # vgg(5,4) loss
 
@@ -44,8 +45,7 @@ if __name__ == "__main__":
     Vggloss = Vggloss.to(device)
 
     content_criterion = nn.MSELoss()
-    adversal_criterion = nn.BCELoss()
-
+    adversal_criterion = nn.BCEWithLogitsLoss()
     PSNR_eval = np.zeros(TOTAL_EPOCH)
     PSNR_train = np.zeros(TOTAL_EPOCH)
     Train_Gen_loss = np.zeros(TOTAL_EPOCH)
@@ -84,31 +84,31 @@ if __name__ == "__main__":
             PSNR_temp = 10 * torch.log10(1 / Mseloss_temp)
             total_PSNR_train += PSNR_temp
 
-            adversarial_loss = adversal_criterion(lr_discriminated,
+            dis_adversarial_loss = adversal_criterion(lr_discriminated,
                                                   torch.zeros_like(lr_discriminated)) + adversal_criterion(hr_discriminated,
                                                                                                            torch.ones_like(
                                                                                                                hr_discriminated))
 
-            adversarial_loss.backward()
+            dis_adversarial_loss.backward()
             Dis_optimizer.step()
 
-            Dis_loss_total += adversarial_loss.item()
+            Dis_loss_total += dis_adversarial_loss.item()
             #    if grad_clip is not None:
             #          torch.utils.clip_gradient
 
             # train Generator
             Gen_optimizer.zero_grad()
 
-            lr_generated = Gen_Model(input)
+           # lr_generated = Gen_Model(input)
             lr_discriminated = Dis_Model(lr_generated)
 
-            adversarial_loss = adversal_criterion(lr_discriminated, torch.ones_like(lr_discriminated))
+            gen_adversarial_loss = adversal_criterion(lr_discriminated, torch.ones_like(lr_discriminated))
             #  content_loss = content_criterion(Vggloss(target),Vggloss(lr_generated))
             # print(np.array(target.cpu().detach()).shape)
             # print(np.array(lr_generated.cpu().detach()).shape)
-            content_loss = Vggloss(target, lr_generated)
+            content_loss = 0.006*Vggloss(target, lr_generated) + content_criterion(lr_generated,target)
 
-            Gen_loss = content_loss + 0.001 * adversarial_loss
+            Gen_loss = content_loss + 0.001 * gen_adversarial_loss
 
             Gen_loss.backward()
             Gen_optimizer.step()
