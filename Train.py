@@ -131,7 +131,7 @@ if __name__ == "__main__":
                 fakeimage = Gen_Model(input)
                 fakeimage = np.array(fakeimage.cpu().detach())
                 fakeimage = fakeimage.squeeze()
-                print(fakeimage.shape())
+                print(fakeimage.shape)
 
                 target = np.array(target.detach())
                 batch_MSE = np.mean((fakeimage - target) ** 2)
