@@ -10,11 +10,12 @@ import Perceptual_Loss
 import argparse
 import glob
 import os
+import utils
 
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description="SRGAN Training Module")
-parser.add_argument('--pre_trained', type = str, default=None, help = "path of pretrained models")
+parser.add_argument('--pre_trained', type = str, default="Trained_model", help = "path of pretrained models")
 parser.add_argument('--num_epochs', type = int, default=100, help="train epoch")
 
 
@@ -53,11 +54,6 @@ if __name__ == "__main__":
 
     Vggloss = Perceptual_Loss.vggloss()  # vgg(5,4) loss
 
-    Gen_Model = Gen_Model.to(device)
-    Dis_Model = Dis_Model.to(device)
-
-    Vggloss = Vggloss.to(device)
-
     content_criterion = nn.MSELoss()
     adversal_criterion = nn.BCEWithLogitsLoss()
     PSNR_eval = np.zeros(TOTAL_EPOCH)
@@ -68,8 +64,16 @@ if __name__ == "__main__":
 
     start_epoch = 0
     if PRETRAINED_PATH is not None:
+        _, gen_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Generator"))
+        start_epoch, dis_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Discriminator"))
+        print(dis_modelpath)
+        print("load module : saved on {} epoch".format(start_epoch))
+        Gen_Model.load_state_dict(torch.load(gen_modelpath))
+        Dis_Model.load_state_dict(torch.load(dis_modelpath))
 
-
+    Gen_Model = Gen_Model.to(device)
+    Dis_Model = Dis_Model.to(device)
+    Vggloss = Vggloss.to(device)
 
 
     for epoch in range(start_epoch,TOTAL_EPOCH):
@@ -79,7 +83,7 @@ if __name__ == "__main__":
         Gen_loss_total = 0
         Dis_loss_total = 0
         total_PSNR_train = 0
-        print("----epoch {}/{}----".format(epoch + 1, TOTAL_EPOCH))
+        print("----epoch {}/{}----".format(epoch+1, TOTAL_EPOCH))
         print("----training step----")
         for i, (input, target) in enumerate(train_dataloader):
             print("---batch {}---".format(i))
@@ -119,7 +123,7 @@ if __name__ == "__main__":
             # train Generator
             Gen_optimizer.zero_grad()
 
-           # lr_generated = Gen_Model(input)
+            lr_generated = Gen_Model(input)
             lr_discriminated = Dis_Model(lr_generated)
 
             gen_adversarial_loss = adversal_criterion(lr_discriminated, torch.ones_like(lr_discriminated))
