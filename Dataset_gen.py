@@ -8,25 +8,28 @@ from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
 
 def hr_transform(crop_size = 96):
-    return torch_transform.Compose([
+    transform = torch_transform.Compose([
         torch_transform.ToPILImage(),
-        torch_transform.RandomCrop(crop_size),
+       # torch_transform.RandomCrop(crop_size), #raise (ValueError : empty range for randrange())
+        torch_transform.CenterCrop(crop_size),
         torch_transform.ToTensor()
     ])
+    return transform
 
 def lr_transform(crop_size = 96, upscale_factor = 4):
-    return torch_transform.Compose([
+    transform = torch_transform.Compose([
         torch_transform.ToPILImage(),
-        torch_transform.Resize(crop_size//upscale_factor,interpolation=Image.BICUBIC),
+        torch_transform.Resize(int(crop_size//upscale_factor),interpolation=Image.BICUBIC),
         torch_transform.ToTensor()
     ])
+    return transform
 
 class Dataset_Train(Dataset):
     def __init__(self, dirpath, crop_size = 96, upscale_factor = 4):
         super(Dataset_Train, self).__init__()
         self.imagelist = glob.glob(os.path.join(dirpath,"*.jpg"))
-        self.cropsize = crop_size - (crop_size%upscale_factor)
-
+      # self.cropsize = crop_size - (crop_size%upscale_factor)
+        self.cropsize = crop_size
         self.hr_transform = hr_transform(self.cropsize)
         self.lr_transform = lr_transform(self.cropsize, upscale_factor=upscale_factor)
 

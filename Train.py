@@ -62,8 +62,16 @@ if __name__ == "__main__":
         print("----epoch {}/{}----".format(epoch + 1, TOTAL_EPOCH))
         print("----training step----")
         for i, (input, target) in enumerate(train_dataloader):
-            #  print(np.array(input).shape)
+            print("---batch {}---".format(i))
+            target_list = np.array(target)
+            input_list = np.array(input)
+            for i, target_image in enumerate(target_list):
+                print("target {} : {}".format(i,np.array(target_image).shape))
+            for i,input_image in enumerate(input):
+                print("input {}: {}".format(i,np.array(input_image).shape))
+
             input, target = input.to(device), target.to(device)
+
 
             # train Discriminator
             Dis_optimizer.zero_grad()
@@ -135,17 +143,4 @@ if __name__ == "__main__":
 
         torch.save(Gen_Model.state_dict(), "Trained_model/Generator/generator_{}th_model.pth".format(epoch))
         torch.save(Dis_Model.state_dict(), "Trained_model/Discriminator/discriminator_{}th_model.pth".format(epoch))
-
-
-
-
-
-    
-
-
-
-
-
-
-
 

@@ -19,8 +19,8 @@ class Residual_block_Generator(nn.Module):
 
         out = self.Conv2(out)
         out = self.BN2(out)
-
-        return out+x
+        out = out+x
+        return out
 
 class Pixelsuffer_block_Generator(nn.Module):
     def __init__(self,input_channels, upscaling_factor=2):
