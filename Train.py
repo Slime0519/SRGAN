@@ -135,12 +135,15 @@ if __name__ == "__main__":
 
                 target = np.array(target.detach())
                 batch_MSE = np.mean((fakeimage - target) ** 2)
-                PSNR_temp = 10 * torch.log10(1 / batch_MSE)
+                PSNR_temp = 10 * np.log10(1 / batch_MSE)
                 total_PSNR_eval += PSNR_temp
 
             PSNR_eval[epoch] = total_PSNR_eval / len(vaild_dataloader)
             print("evaluation PSNR : {}".format(total_PSNR_eval / len(vaild_dataloader)))
-
+        np.save("result_data/Train_Gen_loss.npy",Train_Gen_loss)
+        np.save("result_data/Train_Dis_loss.npy", Train_Dis_loss)
+        np.save("result_data/PSNR_train.npy",PSNR_train)
+        np.save("result_data/PSNR_eval.npy",PSNR_eval)
         torch.save(Gen_Model.state_dict(), "Trained_model/Generator/generator_{}th_model.pth".format(epoch))
         torch.save(Dis_Model.state_dict(), "Trained_model/Discriminator/discriminator_{}th_model.pth".format(epoch))
 
