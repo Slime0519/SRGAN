@@ -5,6 +5,7 @@ import torchvision.models as models
 
 from torchsummary import summary
 
+
 class vggloss(nn.Module):
     def __init__(self,truncate_layer=36):
         super(vggloss, self).__init__()
@@ -16,9 +17,7 @@ class vggloss(nn.Module):
         self.MSE_Loss = nn.MSELoss()
 
     def forward(self,input,target):
-
         perception_loss = self.MSE_Loss(self.feature_extraction_model(input),self.feature_extraction_model(target))
-
         return perception_loss
 
     """ test용 forward 함수

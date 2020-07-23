@@ -1,5 +1,5 @@
 import torchvision.transforms as torch_transform
-
+import torch
 import numpy as np
 import os
 import glob
@@ -64,6 +64,21 @@ class Dataset_Vaild(Dataset):
         print("size of hr_image : {}".format(hr_image.shape))
         print("size of hr_image : {}".format(lr_image.shape))
         return lr_image, hr_image
+
+    def __len__(self):
+        return len(self.imagelist)
+
+class Dataset_Test(Dataset):
+    def __init__(self, dirpath):
+        super(Dataset_Test, self).__init__()
+       # self.upscale_factor = upscale_factor
+        self.imagelist = glob.glob(os.path.join(dirpath, "*.jpg"))
+
+    def __getitem__(self, index):
+        image = Image.open(self.imagelist[index])
+        image = np.array(image)
+        image = torch.from_numpy(image)
+        return image
 
     def __len__(self):
         return len(self.imagelist)
