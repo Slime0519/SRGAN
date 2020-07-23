@@ -17,7 +17,7 @@ from tqdm import tqdm
 parser = argparse.ArgumentParser(description="SRGAN Training Module")
 parser.add_argument('--pre_trained', type = str, default="Trained_model", help = "path of pretrained models")
 parser.add_argument('--num_epochs', type = int, default=100, help="train epoch")
-
+parser.add_argument('--pre_resulted', type = str, default="result_data", help = "data of previous step")
 
 BATCH_SIZE = 16
 CROP_SIZE = 96
@@ -39,6 +39,7 @@ if __name__ == "__main__":
 
     PRETRAINED_PATH = opt.pre_trained
     TOTAL_EPOCH = opt.num_epochs
+    PRE_RESULT_DIR = opt.pre_resulted
 
     train_dataset = Dataset_gen.Dataset_Train(dirpath=DIRPATH_TRAIN, crop_size=96, upscale_factor=UPSCALIE_FACTOR)
     vaild_dataset = Dataset_gen.Dataset_Vaild(dirpath=DIRPATH_VAILD, upscale_factor=UPSCALIE_FACTOR)
@@ -62,6 +63,8 @@ if __name__ == "__main__":
     Train_Dis_loss = np.zeros(TOTAL_EPOCH)
     train_len = len(train_dataloader)
 
+
+
     start_epoch = 0
     if PRETRAINED_PATH is not None:
         _, gen_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Generator"))
@@ -70,6 +73,12 @@ if __name__ == "__main__":
         print("load module : saved on {} epoch".format(start_epoch))
         Gen_Model.load_state_dict(torch.load(gen_modelpath))
         Dis_Model.load_state_dict(torch.load(dis_modelpath))
+
+    if PRE_RESULT_DIR is not None:
+        PSNR_eval = np.load("result_data/PSNR_eval.npy")
+        PSNR_Train = np.load("result_data/PSNR_train.npy")
+        Train_Dis_loss = np.load("result_data/Train_Dis_loss.npy")
+        Train_Gen_loss = np.load("result_data/Train_Gen_loss.npy")
 
     Gen_Model = Gen_Model.to(device)
     Dis_Model = Dis_Model.to(device)
@@ -117,7 +126,7 @@ if __name__ == "__main__":
             dis_adversarial_loss.backward()
             Dis_optimizer.step()
 
-            Dis_loss_total += dis_adversarial_loss.item()
+            Dis_loss_total += float(torch.mean(hr_discriminated))
             #    if grad_clip is not None:
             #          torch.utils.clip_gradient
 
@@ -137,7 +146,7 @@ if __name__ == "__main__":
 
             Gen_loss.backward()
             Gen_optimizer.step()
-            Gen_loss_total += Gen_loss.item()
+            Gen_loss_total += float(torch.mean(lr_discriminated))
             print("epoch {} training step : {}/{}".format(epoch+1, i + 1, train_len))
 
         Train_Gen_loss[epoch] = Gen_loss_total / len(train_dataloader)
