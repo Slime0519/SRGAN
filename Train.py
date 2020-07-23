@@ -16,7 +16,7 @@ from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description="SRGAN Training Module")
 parser.add_argument('--pre_trained', type = str, default="Trained_model", help = "path of pretrained models")
-parser.add_argument('--num_epochs', type = int, default=200, help="train epoch")
+parser.add_argument('--num_epochs', type = int, default=100, help="train epoch")
 
 
 BATCH_SIZE = 16
@@ -43,7 +43,7 @@ if __name__ == "__main__":
     train_dataset = Dataset_gen.Dataset_Train(dirpath=DIRPATH_TRAIN, crop_size=96, upscale_factor=UPSCALIE_FACTOR)
     vaild_dataset = Dataset_gen.Dataset_Vaild(dirpath=DIRPATH_VAILD, upscale_factor=UPSCALIE_FACTOR)
 
-    train_dataloader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=False, num_workers=4)
+    train_dataloader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
     vaild_dataloader = DataLoader(dataset=vaild_dataset, batch_size=1)
 
     Gen_Model = Model.Generator()
