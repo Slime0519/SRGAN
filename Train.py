@@ -86,14 +86,15 @@ if __name__ == "__main__":
         print("----epoch {}/{}----".format(epoch+1, TOTAL_EPOCH))
         print("----training step----")
         for i, (input, target) in enumerate(train_dataloader):
-            print("---batch {}---".format(i))
+           # print("---batch {}---".format(i))
             target_list = np.array(target)
             input_list = np.array(input)
+            """
             for i, target_image in enumerate(target_list):
                 print("target {} : {}".format(i,np.array(target_image).shape))
             for i,input_image in enumerate(input):
                 print("input {}: {}".format(i,np.array(input_image).shape))
-
+            """
             input, target = input.to(device), target.to(device)
 
 
@@ -137,7 +138,7 @@ if __name__ == "__main__":
             Gen_loss.backward()
             Gen_optimizer.step()
             Gen_loss_total += Gen_loss.item()
-            print("training step : {}/{}".format(i + 1, train_len))
+            print("epoch {} training step : {}/{}".format(epoch+1, i + 1, train_len))
 
         Train_Gen_loss[epoch] = Gen_loss_total / len(train_dataloader)
         Train_Dis_loss[epoch] = Dis_loss_total / len(train_dataloader)
