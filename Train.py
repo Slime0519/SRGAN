@@ -15,9 +15,9 @@ import utils
 from tqdm import tqdm
 
 parser = argparse.ArgumentParser(description="SRGAN Training Module")
-parser.add_argument('--pre_trained', type = str, default="Trained_model", help = "path of pretrained models")
+parser.add_argument('--pre_trained', type = str, default=None, help = "path of pretrained models")
 parser.add_argument('--num_epochs', type = int, default=100, help="train epoch")
-parser.add_argument('--pre_resulted', type = str, default="result_data", help = "data of previous step")
+parser.add_argument('--pre_resulted', type = str, default=None,  help = "data of previous step")
 
 BATCH_SIZE = 16
 CROP_SIZE = 96
