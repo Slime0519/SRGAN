@@ -6,12 +6,13 @@ import glob
 from PIL import Image
 from torch.utils.data import Dataset, DataLoader
 import matplotlib.pyplot as plt
+import utils
 
 def hr_transform(crop_size = 96):
     transform = torch_transform.Compose([
         torch_transform.ToPILImage(),
-       # torch_transform.RandomCrop(crop_size), #raise (ValueError : empty range for randrange())
-        torch_transform.CenterCrop(crop_size),
+        torch_transform.RandomCrop(crop_size), #raise (ValueError : empty range for randrange())
+       # torch_transform.CenterCrop(crop_size),
         torch_transform.ToTensor()
     ])
     return transform
@@ -36,7 +37,7 @@ class Dataset_Train(Dataset):
     def __getitem__(self, index):
         image = Image.open(self.imagelist[index])
         image = np.array(image)
-
+       # cropped_image = utils.randomcrop(image,self.cropsize)
         hr_image = self.hr_transform(image)
         lr_image = self.lr_transform(hr_image)
 
@@ -73,11 +74,20 @@ class Dataset_Test(Dataset):
         super(Dataset_Test, self).__init__()
        # self.upscale_factor = upscale_factor
         self.imagelist = glob.glob(os.path.join(dirpath, "*.jpg"))
+        self.transform = torch_transform.Compose([
+            torch_transform.ToPILImage(),
+            torch_transform.CenterCrop(96),
+            torch_transform.ToTensor()
+        ])
 
     def __getitem__(self, index):
         image = Image.open(self.imagelist[index])
         image = np.array(image)
-        image = torch.from_numpy(image)
+        print("Test : image size {}".format(image.shape))
+  #      image = np.transpose(image,(2,0,1))
+        #image = torch.from_numpy(image)
+        image = self.transform(image)
+
         return image
 
     def __len__(self):

@@ -132,3 +132,4 @@ dmypy.json
 .VOCdevkit/
 Dataset.tar
 Trained_model/
+Trained_model.tar
