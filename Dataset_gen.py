@@ -76,14 +76,14 @@ class Dataset_Test(Dataset):
         self.imagelist = glob.glob(os.path.join(dirpath, "*.jpg"))
         self.transform = torch_transform.Compose([
             torch_transform.ToPILImage(),
-            torch_transform.CenterCrop(96),
+            torch_transform.RandomCrop(128),
             torch_transform.ToTensor()
         ])
 
     def __getitem__(self, index):
         image = Image.open(self.imagelist[index])
         image = np.array(image)
-        print("Test : image size {}".format(image.shape))
+    #    print("Test : image size {}".format(image.shape))
   #      image = np.transpose(image,(2,0,1))
         #image = torch.from_numpy(image)
         image = self.transform(image)

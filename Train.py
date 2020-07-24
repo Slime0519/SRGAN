@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
 
     start_epoch = 0
-    if PRETRAINED_PATH is not None:
+    if PRETRAINED_PATH is not "None":
         _, gen_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Generator"))
         start_epoch, dis_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Discriminator"))
         print(dis_modelpath)

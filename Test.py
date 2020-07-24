@@ -5,24 +5,57 @@ import Model
 import Dataset_gen
 from torch.utils.data import DataLoader
 import matplotlib.pyplot as plt
+import matplotlib.image as pltimage
 import numpy as np
 import os
 import cv2
+from PIL import Image
+
+savedir = "Result_image"
 
 if torch.cuda.is_available():
     device = torch.device("cuda")
 else:
     device = torch.device("cpu")
 
+def regularization_image(image):
+    min = np.min(image)
+    temp_image = image-min
+
+    max = np.max(temp_image)
+    temp_image = temp_image/max
+
+    return temp_image
+
+def compare_image(bicubic_image,srgan_image,epoch, save = False, num =0):
+    fig = plt.figure()
+    rows = 1
+    columns = 2
+    fig.suptitle("epoch {}".format(epoch))
+    bicubic_grid = fig.add_subplot(rows, columns, 1)
+    bicubic_grid.imshow(bicubic_image)
+    bicubic_grid.set_title("bicubic interpolation")
+    bicubic_grid.axis("off")
+
+    srgan_grid= fig.add_subplot(rows, columns, 2)
+    srgan_grid.imshow(srgan_image)
+    srgan_grid.set_title("SRGAN")
+    srgan_grid.axis("off")
+    if save:
+        plt.savefig(os.path.join(savedir,"compare","epoch_{}".format(epoch),"image_{}".format(num)),dpi=500)
+    else:
+        plt.show()
+
+
 if __name__ == "__main__":
     testset_dirpath = "Dataset/Test"
     testset_name = "BSDS300"
 
     model_dirpath = "Trained_model"
-    model_epoch = 100
+    model_epoch = 200
 
-    savedir = "Result_image"
 
+    
     gen_model = Model.Generator()
     Test_Dataset = Dataset_gen.Dataset_Test(dirpath=os.path.join(testset_dirpath,testset_name))
     Test_Dataloader = DataLoader(dataset=Test_Dataset, shuffle=False, batch_size=1, num_workers=0)
@@ -37,19 +70,19 @@ if __name__ == "__main__":
         output_image = np.array(output.cpu().detach())
         output_image = output_image.squeeze()
         output_image = np.transpose(output_image,(1,2,0))
-        output_image = (output_image*255).astype(np.uint8)
-        if i % 10 == 0:
-            print(np.array(input.cpu().detach()).shape)
-            print(output_image.shape)
-            plt.imshow(output_image)
-            plt.show()
-            plt.imshow(output_image)
-            plt.savefig(os.path.join(savedir,"resultimage_{}_{}".format(testset_name,i)),dpi = 500)
+        regularized_output_image = regularization_image(output_image)
+        regularized_output_image = (regularized_output_image*255).astype(np.uint8)
 
-            input_temp = np.array(input.cpu().detach())
-            input_bicubic = cv2.resize(np.transpose(np.squeeze(input_temp),(1,2,0)),dsize=(0,0),fx = 4, fy = 4, interpolation=cv2.INTER_CUBIC)
-            plt.imshow(input_bicubic)
-            plt.show()
+        input_temp = np.array(input.cpu().detach())
+        input_bicubic = cv2.resize(np.transpose(np.squeeze(input_temp), (1, 2, 0)), dsize=(0, 0), fx=4, fy=4,
+                                   interpolation=cv2.INTER_CUBIC)
+        regularized_input_image = regularization_image(input_bicubic)
+        regularized_input_image = (regularized_input_image * 255).astype(np.uint8)
+        compare_image(bicubic_image=regularized_input_image, srgan_image=regularized_output_image, epoch=model_epoch,
+                      save=True, num=i+1)
+      #  if i % 10 == 0:
+        #    compare_image(bicubic_image=regularized_input_image,srgan_image=regularized_output_image,epoch=model_epoch,save = False)
+            #pltimage.imsave(os.path.join(savedir,"my_{}th_image.jpg".format(i)),regularized_output_image)
 
     PSNR_eval = np.load("result_data/PSNR_eval.npy")
     PSNR_Train = np.load("result_data/PSNR_train.npy")

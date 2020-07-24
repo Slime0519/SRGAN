@@ -133,3 +133,5 @@ dmypy.json
 Dataset.tar
 Trained_model/
 Trained_model.tar
+centercropped/
+Result_image/
