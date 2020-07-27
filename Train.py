@@ -63,8 +63,6 @@ if __name__ == "__main__":
     Train_Dis_loss = np.zeros(TOTAL_EPOCH)
     train_len = len(train_dataloader)
 
-
-
     start_epoch = 0
     if PRETRAINED_PATH is not "None":
         _, gen_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Generator"))
