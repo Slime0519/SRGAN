@@ -41,6 +41,7 @@ def compare_image(bicubic_image,srgan_image,epoch, save = False, num =0):
     srgan_grid.imshow(srgan_image)
     srgan_grid.set_title("SRGAN")
     srgan_grid.axis("off")
+
     if save:
         plt.savefig(os.path.join(savedir,"compare","epoch_{}".format(epoch),"image_{}".format(num)),dpi=500)
     else:
@@ -52,13 +53,13 @@ if __name__ == "__main__":
     testset_name = "BSDS300"
 
     model_dirpath = "Trained_model"
-    model_epoch = 200
+    model_epoch = 300
 
 
     
     gen_model = Model.Generator()
     Test_Dataset = Dataset_gen.Dataset_Test(dirpath=os.path.join(testset_dirpath,testset_name))
-    Test_Dataloader = DataLoader(dataset=Test_Dataset, shuffle=False, batch_size=1, num_workers=0)
+    Test_Dataloader = DataLoader(dataset=Test_Dataset, shuffle=True, batch_size=1, num_workers=0)
 
     gen_model.load_state_dict(torch.load(os.path.join(model_dirpath,"Generator","generator_{}th_model.pth".format(model_epoch-1))))
     gen_model = gen_model.to(device)
@@ -78,8 +79,18 @@ if __name__ == "__main__":
                                    interpolation=cv2.INTER_CUBIC)
         regularized_input_image = regularization_image(input_bicubic)
         regularized_input_image = (regularized_input_image * 255).astype(np.uint8)
-        compare_image(bicubic_image=regularized_input_image, srgan_image=regularized_output_image, epoch=model_epoch,
-                      save=True, num=i+1)
+
+        #PNG Image 저장
+        PIL_Input_Image = Image.fromarray(regularized_input_image).convert('RGB')
+        #PIL_Input_Image.save("Result_image/bicubic/epoch{}_image{}.png".format(model_epoch,i))
+        PIL_Input_Image.save("Result_image/bicubic/epoch{}_image.png".format(model_epoch)) #save large size image
+
+        PIL_output_Image = Image.fromarray(regularized_output_image).convert('RGB')
+        #PIL_output_Image.save("Result_image/srgan/epoch{}_image{}.png".format(model_epoch, i))
+        PIL_output_Image.save("Result_image/srgan/epoch{}_image.png".format(model_epoch))
+
+      #  compare_image(bicubic_image=regularized_input_image, srgan_image=regularized_output_image, epoch=model_epoch,
+       #               save=True, num=i+1)
       #  if i % 10 == 0:
         #    compare_image(bicubic_image=regularized_input_image,srgan_image=regularized_output_image,epoch=model_epoch,save = False)
             #pltimage.imsave(os.path.join(savedir,"my_{}th_image.jpg".format(i)),regularized_output_image)
@@ -97,6 +108,7 @@ if __name__ == "__main__":
     plt.plot(x,y_eval)
     plt.legend(['train PSNR', 'evaluation PSNR'])
     plt.title("average PSNR at train and evaluation step")
+  #  plt.savefig("result_data/average_PSNR.png")
     plt.show()
 
     dis_loss = Train_Dis_loss
@@ -106,6 +118,7 @@ if __name__ == "__main__":
     plt.plot(x,gen_loss)
     plt.legend(['discriminator loss', 'generator loss'])
     plt.title("average loss of generator and discriminator loss at training step")
+   # plt.savefig("result_data/average_loss.png")
     plt.show()
 
 
