@@ -58,4 +58,5 @@ class vggloss(nn.Module):
 if __name__ == "__main__":
 
     Test = vggloss().to('cuda:0')
+
     #summary(Test,(3,384,384))
