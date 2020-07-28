@@ -21,7 +21,7 @@ parser.add_argument('--pre_resulted', type = str, default=None,  help = "data of
 
 BATCH_SIZE = 16
 CROP_SIZE = 96
-UPSCALIE_FACTOR = 4
+UPSCALE_FACTOR = 4
 DIRPATH_TRAIN = "Dataset/Train"
 DIRPATH_VAILD = "Dataset/Vaild"
 TOTAL_EPOCH = 100
@@ -41,8 +41,8 @@ if __name__ == "__main__":
     TOTAL_EPOCH = opt.num_epochs
     PRE_RESULT_DIR = opt.pre_resulted
 
-    train_dataset = Dataset_gen.Dataset_Train(dirpath=DIRPATH_TRAIN, crop_size=96, upscale_factor=UPSCALIE_FACTOR)
-    vaild_dataset = Dataset_gen.Dataset_Vaild(dirpath=DIRPATH_VAILD, upscale_factor=UPSCALIE_FACTOR)
+    train_dataset = Dataset_gen.Dataset_Train(dirpath=DIRPATH_TRAIN, crop_size=96, upscale_factor=UPSCALE_FACTOR)
+    vaild_dataset = Dataset_gen.Dataset_Vaild(dirpath=DIRPATH_VAILD, upscale_factor=UPSCALE_FACTOR)
 
     train_dataloader = DataLoader(dataset=train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
     vaild_dataloader = DataLoader(dataset=vaild_dataset, batch_size=1)
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
 
     start_epoch = 0
-    if PRETRAINED_PATH is not "None":
+    if PRETRAINED_PATH is not None:
         _, gen_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Generator"))
         start_epoch, dis_modelpath = utils.load_module(os.path.join(PRETRAINED_PATH, "Discriminator"))
         print(dis_modelpath)
@@ -138,8 +138,8 @@ if __name__ == "__main__":
 
             gen_adversarial_loss = adversal_criterion(lr_discriminated, torch.ones_like(lr_discriminated))
             #  content_loss = content_criterion(Vggloss(target),Vggloss(lr_generated))
-            # print(np.array(target.cpu().detach()).shape)
-            # print(np.array(lr_generated.cpu().detach()).shape)
+            #print(np.array(target.cpu().detach()).shape)
+           # print(np.array(lr_generated.cpu().detach()).shape)
             content_loss = 0.006*Vggloss(target, lr_generated) + content_criterion(lr_generated,target)
 
             Gen_loss = content_loss + 0.001 * gen_adversarial_loss
