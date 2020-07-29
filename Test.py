@@ -54,6 +54,8 @@ if __name__ == "__main__":
     testset_dirpath = "Dataset/Test"
     testset_name = "BSDS300"
 
+    result_dirpath = "result_data"
+
     model_dirpath = "Trained_model"
     model_epoch = 300
 
@@ -85,13 +87,13 @@ if __name__ == "__main__":
         regularized_input_image = (regularized_input_image * 255).astype(np.uint8)
 
         #PNG Image 저장
-        PIL_Input_Image = Image.fromarray(regularized_input_image).convert('RGB')
+      #  PIL_Input_Image = Image.fromarray(regularized_input_image).convert('RGB')
         #PIL_Input_Image.save("Result_image/bicubic/epoch{}_image{}.png".format(model_epoch,i))
-        PIL_Input_Image.save("Result_image/bicubic/epoch{}_image18.png".format(model_epoch)) #save large size image
+      #  PIL_Input_Image.save("Result_image/bicubic/epoch{}_image18.png".format(model_epoch)) #save large size image
 
-        PIL_output_Image = Image.fromarray(regularized_output_image).convert('RGB')
+       # PIL_output_Image = Image.fromarray(regularized_output_image).convert('RGB')
         #PIL_output_Image.save("Result_image/srgan/epoch{}_image{}.png".format(model_epoch, i))
-        PIL_output_Image.save("Result_image/srgan/epoch{}_image18.png".format(model_epoch))
+      #  PIL_output_Image.save("Result_image/srgan/epoch{}_image18.png".format(model_epoch))
 
       #  compare_image(bicubic_image=regularized_input_image, srgan_image=regularized_output_image, epoch=model_epoch,
        #               save=True, num=i+1)
@@ -99,10 +101,10 @@ if __name__ == "__main__":
         #    compare_image(bicubic_image=regularized_input_image,srgan_image=regularized_output_image,epoch=model_epoch,save = False)
             #pltimage.imsave(os.path.join(savedir,"my_{}th_image.jpg".format(i)),regularized_output_image)
 
-    PSNR_eval = np.load("result_data/PSNR_eval.npy")
-    PSNR_Train = np.load("result_data/PSNR_train.npy")
-    Train_Dis_loss = np.load("result_data/Train_Dis_loss.npy")
-    Train_Gen_loss = np.load("result_data/Train_Gen_loss.npy")
+    PSNR_eval = np.load(os.path.join(result_dirpath,"PSNR_eval.npy"))
+    PSNR_Train = np.load(os.path.join(result_dirpath,"PSNR_train.npy"))
+    Train_Dis_loss = np.load(os.path.join(result_dirpath,"Train_Dis_loss.npy"))
+    Train_Gen_loss = np.load(os.path.join(result_dirpath,"Train_Gen_loss.npy"))
 
     Num_Epoch = len(PSNR_eval)
     x= range(Num_Epoch)
@@ -110,20 +112,22 @@ if __name__ == "__main__":
     y_train = PSNR_Train
     plt.plot(x,y_train)
     plt.plot(x,y_eval)
+    plt.ylim(20,26)
     plt.legend(['train PSNR', 'evaluation PSNR'])
     plt.title("average PSNR at train and evaluation step")
-  #  plt.savefig("result_data/average_PSNR.png")
-    plt.show()
+    plt.savefig("result_data/average_PSNR.png")
+    #plt.show()
 
     dis_loss = Train_Dis_loss
     gen_loss = Train_Gen_loss
 
+
     plt.plot(x,dis_loss)
     plt.plot(x,gen_loss)
-    plt.legend(['discriminator loss', 'generator loss'])
-    plt.title("average loss of generator and discriminator loss at training step")
-   # plt.savefig("result_data/average_loss.png")
-    plt.show()
+    plt.legend(['target image', 'generated image'])
+    plt.title("average adversarial loss of images at training step")
+    plt.savefig("result_data/average_loss.png")
+   # plt.show()
 
 
 

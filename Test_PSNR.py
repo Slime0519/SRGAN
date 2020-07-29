@@ -60,7 +60,7 @@ if __name__ == "__main__":
     model_epoch = 300
 
     gen_model = Model.Generator()
-    Test_Dataset = Dataset_gen.Dataset_Test(dirpath=os.path.join(testset_dirpath, testset_name),downscaling_factor=4)
+    Test_Dataset = Dataset_gen.Dataset_Vaild(dirpath=os.path.join(testset_dirpath, testset_name))
     Test_Dataloader = DataLoader(dataset=Test_Dataset, shuffle=True, batch_size=1, num_workers=0)
 
     gen_model.load_state_dict(
@@ -85,6 +85,7 @@ if __name__ == "__main__":
         regularized_input_image = (regularized_input_image * 255).astype(np.uint8)
 
         original_input_image =np.array(original_input_image).squeeze()
+        original_input_image = np.transpose(original_input_image,(1,2,0))
         regularized_original_image = regularization_image(original_input_image)
 
         plt.imshow(regularized_original_image)

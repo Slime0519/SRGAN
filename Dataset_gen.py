@@ -77,7 +77,7 @@ class Dataset_Test(Dataset):
         self.downsampling_factor = downscaling_factor
         self.transform = torch_transform.Compose([
             torch_transform.ToPILImage(),
-             #   torch_transform.RandomCrop(128),
+            torch_transform.RandomCrop(128),
             torch_transform.ToTensor()
         ])
     def __getitem__(self, index):

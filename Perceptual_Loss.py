@@ -22,8 +22,8 @@ class vggloss(nn.Module):
     def __init__(self,truncate_layer=36):
         super(vggloss, self).__init__()
         self.model = models.vgg.vgg19(pretrained=True)
-        self.feature_extraction_model = nn.Sequential(*list(self.model.features)[:truncate_layer+1]).eval()
-
+        self.feature_extraction_model = nn.Sequential(*list(self.model.features)[:truncate_layer]).eval()
+      #  print(self.model.features)
         self.truncated_layer = truncate_layer
 
         for param in self.feature_extraction_model.parameters():
