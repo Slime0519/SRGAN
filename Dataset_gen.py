@@ -11,8 +11,8 @@ import cv2
 def hr_transform(crop_size = 96):
     transform = torch_transform.Compose([
         torch_transform.ToPILImage(),
-        torch_transform.RandomCrop(crop_size), #raise (ValueError : empty range for randrange())
-       # torch_transform.CenterCrop(crop_size),
+       # torch_transform.RandomCrop(crop_size), #raise (ValueError : empty range for randrange())
+        torch_transform.CenterCrop(crop_size),
         torch_transform.ToTensor()
     ])
     return transform
