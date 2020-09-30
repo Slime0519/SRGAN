@@ -17,7 +17,19 @@ It has 5 Residual blocks (simpler version), and reconstruct image by pixelshuffl
 ![](/Description_image/Discriminator.png)
    
 Discriminator has ordinary structure like traditional Discriminator of GAN.<br>
-It has Sequential ( Conv + BN + LeakyReLU ) blocks and downsample input image alternately.
+It has Sequential ( Conv + BN + LeakyReLU ) blocks and downsample input image alternately.   
+
+### Perceptual loss
+Proposed in [Perceptual Losses for Real-Time Style Transfer and Super-Resolution ](https://arxiv.org/pdf/1603.08155) paper<br>
+![](/Description_image/VGGLoss.png)<br>
+To improve perceptual quality of result images, SRGAN use perceptual loss(a.k.a VGG loss).
+This function compare two feature map extracted intermediate layer in pretrained VGG-19 network, we can easily implement this function. 
+I used pytorch internal library and extract feature map easily.<br>
+
+ original input | ![original input](/Description_image/original_input.png)  
+ VGG22          | ![VGG22_1](/Description_image/VGG22_1.png){: width="224" height="224"} ![VGG22_2](/Description_image/VGG22_2.png){: width="224" height="224"} 
+ VGG54          | ![VGG54_1](/Description_image/VGG54-1.png){: width="224" height="224"} ![VGG54_2](/Description_image/VGG54_2.png){: width="224" height="224"}
+
 ## Dataset
 | Dataset name | usage               | link                                                                   |
 |--------------|---------------------|------------------------------------------------------------------------|
