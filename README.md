@@ -26,9 +26,18 @@ To improve perceptual quality of result images, SRGAN use perceptual loss(a.k.a 
 This function compare two feature map extracted intermediate layer in pretrained VGG-19 network, we can easily implement this function. 
 I used pytorch internal library and extract feature map easily.<br>
 
- original input | ![original input](/Description_image/original_input.png)  
- VGG22          | ![VGG22_1](/Description_image/VGG22_1.png){: width="224" height="224"} ![VGG22_2](/Description_image/VGG22_2.png){: width="224" height="224"} 
- VGG54          | ![VGG54_1](/Description_image/VGG54-1.png){: width="224" height="224"} ![VGG54_2](/Description_image/VGG54_2.png){: width="224" height="224"}
+
+<table style="padding:10px">
+  <tr>
+    <td> 
+         <img src="/Description_image/original_input.png"  alt="1" width = 279px height = 279px ></td>
+      
+ <td><img src="/Description_image/VGG22_1.png" align="right" alt="2" width = 279px height = 279px></td>
+   <td><img src="/Description_image/VGG54-1.png" alt="3" width = 279px height = 279px></td>
+    
+   <!--<td><img src="./Scshot/trip_end.png" align="right" alt="4" width =  279px height = 496px></td>-->
+  </tr>
+</table>
 
 ## Dataset
 | Dataset name | usage               | link                                                                   |
