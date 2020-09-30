@@ -26,18 +26,30 @@ To improve perceptual quality of result images, SRGAN use perceptual loss(a.k.a 
 This function compare two feature map extracted intermediate layer in pretrained VGG-19 network, we can easily implement this function. 
 I used pytorch internal library and extract feature map easily.<br>
 
-
-<table style="padding:10px">
+<table style="padding:10px; margin-left:auto; margin-right:auto" align="center">
   <tr>
-    <td> 
-         <img src="/Description_image/original_input.png"  alt="1" width = 279px height = 279px ></td>
-      
- <td><img src="/Description_image/VGG22_1.png" align="right" alt="2" width = 279px height = 279px></td>
-   <td><img src="/Description_image/VGG54-1.png" alt="3" width = 279px height = 279px></td>
+      <p><td colspan = "3" span style="color:white" align = "center"><b>Extracted features</td></p>
+  </tr>
+  <tr>
+      <td>Original image</td>
+      <td colspan = "2" align="center"><img src="/Description_image/original_input.png" align="center" width = 150px height = 150px ></td>
+  </tr>
+  <tr>
+    <td>VGG22</td>
+    <td><img src="/Description_image/VGG22_1.png" align="center" width = 150px height = 150px></td>
+    <td><img src="/Description_image/VGG22_2.png" align="center" width = 150px height = 150px></td>
     
    <!--<td><img src="./Scshot/trip_end.png" align="right" alt="4" width =  279px height = 496px></td>-->
   </tr>
+  <tr>
+    <td>VGG54</td>
+    <td><img src="/Description_image/VGG54-1.png" align="center" width = 150px height = 150px></td>
+    <td><img src="/Description_image/VGG54-2.png" align="center" width = 150px height = 150px></td>
+  </tr>
 </table>
+<br>
+As above table, VGG22 extract low-level features of image, VGG54 extract high-level features of image. I use VGG54, which perform better to generate result.
+
 
 ## Dataset
 | Dataset name | usage               | link                                                                   |
